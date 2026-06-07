@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מדריך התקנה — סדנת יהודית ברדוגו</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo-50:#EEEDFE; --indigo-100:#CECBF6; --indigo-300:#7F77DD;
+  --indigo-600:#534AB7; --indigo-700:#3C3489; --indigo-900:#26215C;
+  --ink:#1a1626; --muted:#6b6577; --faint:#9a94a6;
+  --line:#e8e5ef; --line-soft:#f1eff7;
+  --paper:#ffffff; --canvas:#f7f5fc;
+  --blue-bg:#E6F1FB; --blue-tx:#0C447C; --blue-ic:#185FA5;
+  --amber-bg:#FAEEDA; --amber-tx:#633806; --amber-ic:#854F0B;
+  --green-bg:#EAF3DE; --green-tx:#3B6D11;
+  --coral-bg:#FAECE7; --coral-tx:#993C1D;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Heebo',-apple-system,sans-serif;
+  background:var(--canvas);
+  color:var(--ink);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  padding:0;
+}
+.bg-deco{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.bg-deco::before{content:"";position:absolute;top:-180px;left:-120px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(127,119,221,.16),transparent 70%);}
+.bg-deco::after{content:"";position:absolute;bottom:-200px;right:-140px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(83,74,183,.10),transparent 70%);}
+.wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 20px 80px;}
+
+/* HERO */
+.hero{
+  margin-top:48px;
+  background:linear-gradient(135deg,var(--indigo-700),var(--indigo-900));
+  border-radius:28px;
+  padding:48px 44px;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 24px 60px -24px rgba(38,33,92,.55);
+}
+.hero::before{content:"";position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.06);}
+.hero::after{content:"";position:absolute;bottom:-90px;left:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05);}
+.hero-inner{position:relative;z-index:2;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:7px 16px;border-radius:100px;font-size:13px;font-weight:500;letter-spacing:.3px;margin-bottom:22px;}
+.hero h1{font-size:38px;font-weight:900;line-height:1.2;margin-bottom:14px;letter-spacing:-.5px;}
+.hero p{font-size:16px;font-weight:300;color:rgba(255,255,255,.85);max-width:520px;}
+.hero .sig{display:flex;align-items:center;gap:14px;margin-top:30px;padding-top:24px;border-top:1px solid rgba(255,255,255,.15);}
+.sig-av{width:52px;height:52px;border-radius:50%;background:#fff;color:var(--indigo-700);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0;}
+.sig-txt strong{display:block;font-size:16px;font-weight:700;}
+.sig-txt span{font-size:13px;color:rgba(255,255,255,.75);font-weight:300;}
+
+/* PROGRESS RAIL */
+.rail{display:flex;align-items:center;gap:0;margin:40px 6px 36px;}
+.rail-node{width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid var(--indigo-100);color:var(--indigo-600);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;box-shadow:0 2px 8px rgba(60,52,137,.08);}
+.rail-line{flex:1;height:2px;background:var(--indigo-100);}
+
+/* STEPS */
+.step{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:20px;
+  margin-bottom:22px;
+  overflow:hidden;
+  box-shadow:0 4px 24px -12px rgba(38,33,92,.12);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.step:hover{transform:translateY(-2px);box-shadow:0 14px 40px -18px rgba(38,33,92,.22);}
+.sh{display:flex;align-items:center;gap:16px;padding:20px 26px;border-bottom:1px solid var(--line-soft);background:linear-gradient(180deg,#faf9fe,#fff);}
+.snum{width:40px;height:40px;border-radius:13px;background:var(--indigo-700);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(60,52,137,.5);}
+.snum.done{background:linear-gradient(135deg,var(--indigo-600),var(--indigo-900));}
+.stitle{font-size:18px;font-weight:700;color:var(--ink);}
+.stitle small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:1px;}
+.stag{font-size:11px;padding:4px 12px;border-radius:100px;margin-right:auto;font-weight:700;white-space:nowrap;}
+.free{background:var(--green-bg);color:var(--green-tx);}
+.paid{background:var(--coral-bg);color:var(--coral-tx);}
+.sb{padding:22px 26px;}
+.sb>p{font-size:15px;color:var(--muted);margin-bottom:14px;}
+ol.sl{padding-right:22px;margin:6px 0;}
+ol.sl li{font-size:15px;color:var(--ink);margin-bottom:9px;padding-right:6px;}
+ol.sl li::marker{color:var(--indigo-600);font-weight:700;}
+ol.sl li:last-child{margin-bottom:0;}
+.cmd{
+  background:#1e1a2e;border-radius:12px;padding:14px 18px;
+  font-family:'JetBrains Mono',monospace;font-size:13.5px;color:#d6d0ec;
+  direction:ltr;text-align:left;margin:12px 0;position:relative;
+  border:1px solid #2c2740;overflow-x:auto;
+}
+.cmd::before{content:"$";color:var(--indigo-300);margin-left:10px;font-weight:500;}
+.note{display:flex;gap:12px;border-radius:14px;padding:14px 16px;margin:14px 0;align-items:flex-start;font-size:14px;line-height:1.6;}
+.note i{font-size:20px;flex-shrink:0;margin-top:1px;}
+.note.info{background:var(--blue-bg);color:var(--blue-tx);}
+.note.info i{color:var(--blue-ic);}
+.note.warn{background:var(--amber-bg);color:var(--amber-tx);}
+.note.warn i{color:var(--amber-ic);}
+.sub{font-size:13px;font-weight:700;color:var(--indigo-700);margin:20px 0 8px;display:flex;align-items:center;gap:8px;}
+.sub::before{content:"";width:4px;height:16px;background:var(--indigo-300);border-radius:4px;}
+a{color:var(--indigo-600);font-weight:500;text-decoration:none;border-bottom:1.5px solid var(--indigo-100);transition:border-color .15s;}
+a:hover{border-color:var(--indigo-600);}
+
+/* ROUTE CARDS */
+.rc{border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:14px;background:#fdfcff;}
+.rc:last-of-type{margin-bottom:0;}
+.rc h4{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.rc h4 i{font-size:20px;color:var(--indigo-600);}
+.rc>p{font-size:14px;color:var(--muted);margin-bottom:10px;}
+.pill-rec{font-size:11px;font-weight:700;background:var(--indigo-50);color:var(--indigo-700);padding:3px 10px;border-radius:100px;margin-right:auto;}
+.rc.featured{border-color:var(--indigo-300);background:linear-gradient(180deg,#f6f4ff,#fff);}
+
+/* SUMMARY */
+.sum-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+.sum-row{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#faf9fe;border:1px solid var(--line-soft);border-radius:14px;transition:background .15s;}
+.sum-row:hover{background:var(--indigo-50);}
+.sum-ic{width:42px;height:42px;border-radius:12px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sum-ic i{font-size:20px;color:var(--indigo-700);}
+.sum-b{min-width:0;}
+.sum-b strong{font-size:15px;font-weight:700;color:var(--ink);}
+.sum-b span{display:block;font-size:13px;color:var(--muted);}
+.sum-b code{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--indigo-600);direction:ltr;display:inline-block;margin-top:2px;word-break:break-all;}
+
+/* FOOTER */
+.footer{margin-top:50px;text-align:center;padding-top:30px;border-top:1px solid var(--line);}
+.footer .fl{font-size:20px;font-weight:900;color:var(--indigo-700);letter-spacing:-.3px;}
+.footer .fs{font-size:13px;color:var(--faint);margin-top:6px;}
+.footer .ft{font-size:12px;color:var(--faint);margin-top:14px;font-style:italic;}
+
+@media (max-width:560px){
+  .hero{padding:34px 26px;border-radius:22px;}
+  .hero h1{font-size:28px;}
+  .sb,.sh{padding-left:18px;padding-right:18px;}
+  .rail-node{width:28px;height:28px;font-size:12px;}
+}
+@media print{
+  body{background:#fff;}
+  .bg-deco{display:none;}
+  .step{box-shadow:none;border:1px solid #ddd;break-inside:avoid;}
+  .step:hover{transform:none;}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.34.1/iconfont/tabler-icons.min.css" rel="stylesheet"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.34.1/iconfont/tabler-icons.min.css">
+</head>
+<body>
+<div class="bg-deco"></div>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge"><i class="ti ti-sparkles"></i>סדנת מאסטר-קלאס · פיתוח עם AI</div>
+      <h1>מדריך התקנה<br>סביבת העבודה שלך</h1>
+      <p>ברוכה הבאה! לפני המפגש הראשון נתקין יחד את כל הכלים. עקבי אחר השלבים לפי הסדר — כל שלב בנוי על הקודם, אז אל תדלגי על אף אחד מהם.</p>
+      <div class="sig">
+        <div class="sig-av">יב</div>
+        <div class="sig-txt">
+          <strong>יהודית ברדוגו</strong>
+          <span>מערכות מותאמות אישית · נבנות בדיוק</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="התקדמות">
+    <div class="rail-node">1</div><div class="rail-line"></div>
+    <div class="rail-node">2</div><div class="rail-line"></div>
+    <div class="rail-node">3</div><div class="rail-line"></div>
+    <div class="rail-node">4</div><div class="rail-line"></div>
+    <div class="rail-node">5</div><div class="rail-line"></div>
+    <div class="rail-node">6</div>
+  </nav>
+
+  <!-- STEP 1 -->
+  <section class="step">
+    <div class="sh">
+      <div class="snum">1</div>
+      <div class="stitle">התקנת VS Code<small>עורך הקוד המרכזי</small></div>
+      <span class="stag free">חינם</span>
+    </div>
+    <div class="sb">
+      <p>VS Code הוא כלי העבודה המרכזי של מפתחים כיום. הוא קל, מהיר ותומך בכל סוגי הקוד.</p>
+      <ol class="sl">
+        <li>היכנסי לאתר הרשמי: <a href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a></li>
+        <li>לחצי על כפתור <strong>Download</strong> המתאים למערכת ההפעלה שלך (Mac / Windows).</li>
+        <li>הריצי את קובץ ההתקנה ועקבי אחר ההוראות על המסך.</li>
+      </ol>
+      <div class="note info"><i class="ti ti-info-circle"></i><span>אם את ב-Windows, בשלב ההתקנה סמני את האפשרות <strong>"Add to PATH"</strong> — זה יחסוך לך בעיות בהמשך.</span></div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step">
+    <div class="sh">
+      <div class="snum">2</div>
+      <div class="stitle">התקנת Git<small>מערכת ניהול גרסאות</small></div>
+      <span class="stag free">חינם</span>
+    </div>
+    <div class="sb">
+      <p>Git הכרחי כדי שנוכל לשמור, לנהל ולהעלות את הקוד לאוויר. גם Claude Code משתמש בו כדי להבין את מבנה הפרויקט.</p>
+      <ol class="sl">
+        <li>היכנסי לאתר: <a href="https://git-scm.com/downloads" target="_blank">git-scm.com/downloads</a></li>
+        <li>הורידי את הגרסה המתאימה למערכת שלך.</li>
+        <li>הריצי את קובץ ההתקנה — השאירי את כל ברירות המחדל (Next, Next, Next) עד לסיום.</li>
+        <li>פתחי טרמינל (שורת פקודה) ובדקי שההתקנה הצליחה:</li>
+      </ol>
+      <div class="cmd">git --version</div>
+      <p>אם מופיע מספר גרסה — הכל תקין.</p>
+
+      <div class="sub">הגדרת הזהות שלך ב-Git</div>
+      <p>המערכת צריכה לדעת מי "חותמת" על הקוד. פתחי CMD או PowerShell (חפשי "PowerShell" בתפריט התחל) והריצי את שתי הפקודות — אחת אחרי השנייה:</p>
+      <div class="cmd">git config --global user.name "Your Name"</div>
+      <div class="cmd">git config --global user.email "your.email@example.com"</div>
+      <div class="note warn"><i class="ti ti-alert-triangle"></i><span><strong>חשוב מאוד:</strong> השתמשי בדיוק באותה כתובת מייל שאיתה תפתחי חשבון GitHub בשלב הבא — כך המערכות יזהו שזו את ויסתנכרנו.</span></div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step">
+    <div class="sh">
+      <div class="snum">3</div>
+      <div class="stitle">התקנת Node.js<small>דרישת קדם להרצה</small></div>
+      <span class="stag free">חינם</span>
+    </div>
+    <div class="sb">
+      <p>כדי להריץ את ה-CLI של Claude Code, אנחנו צריכות את סביבת Node.js (גרסה 18 ומעלה).</p>
+      <ol class="sl">
+        <li>היכנסי לאתר: <a href="https://nodejs.org" target="_blank">nodejs.org</a></li>
+        <li>הורידי את גרסת ה-<strong>LTS</strong> (כתוב עליה "Recommended for most users").</li>
+        <li>הריצי את קובץ ההתקנה לפי ברירות המחדל.</li>
+        <li>בדקי בטרמינל שההתקנה הצליחה:</li>
+      </ol>
+      <div class="cmd">node --version</div>
+      <div class="note info"><i class="ti ti-info-circle"></i><span>הפקודה אמורה להציג מספר שמתחיל ב-<strong>v18</strong> ומעלה, למשל: v20.11.0</span></div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step">
+    <div class="sh">
+      <div class="snum">4</div>
+      <div class="stitle">פתיחת חשבון GitHub<small>הענן של המפתחים</small></div>
+      <span class="stag free">חינם</span>
+    </div>
+    <div class="sb">
+      <p>GitHub הוא ה"ענן" שאליו נעלה את הקוד באמצעות Git — כדי לגבות אותו, לשתף אותו, ולחבר אותו לשירותי אחסון כדי שהאתר או המערכת יהיו באוויר.</p>
+      <ol class="sl">
+        <li>היכנסי לאתר: <a href="https://github.com" target="_blank">github.com</a></li>
+        <li>לחצי על <strong>Sign up</strong> בפינה הימנית העליונה.</li>
+        <li>הזיני את <strong>אותה כתובת מייל</strong> שהגדרת ב-Git (שלב 2), בחרי סיסמה חזקה ושם משתמש פנוי.</li>
+        <li>עקבי אחר הוראות האימות ואשרי את המייל שתקבלי לתיבת הדואר.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step">
+    <div class="sh">
+      <div class="snum">5</div>
+      <div class="stitle">התקנת Claude Code<small>סוכן ה-AI שכותב איתנו קוד</small></div>
+      <span class="stag paid">דורש מנוי</span>
+    </div>
+    <div class="sb">
+      <p>יש שתי דרכים עיקריות לעבוד עם Claude Code. בשיעור נתמקד בשתיהן:</p>
+
+      <div class="rc featured">
+        <h4><i class="ti ti-puzzle"></i>מסלול א' — תוסף ב-VS Code<span class="pill-rec">מומלץ למתחילות</span></h4>
+        <p>הדרך הנוחה ביותר — הכל מתוך עורך הקוד.</p>
+        <ol class="sl">
+          <li>פתחי את VS Code.</li>
+          <li>לחצי על אייקון ה-<strong>Extensions</strong> (ריבוע בצד שמאל) או הקישי <strong>Ctrl+Shift+X</strong>.</li>
+          <li>חפשי את התוסף הרשמי: <strong>Claude Code</strong> (של Anthropic) ולחצי <strong>Install</strong>.</li>
+          <li>אייקון כוכב (Spark) יופיע בסרגל הצד — סימן שהכל מוכן.</li>
+        </ol>
+      </div>
+
+      <div class="rc">
+        <h4><i class="ti ti-terminal-2"></i>מסלול ב' — התקנה דרך הטרמינל (CLI)</h4>
+        <p>למי שרוצה כוח מלא בטרמינל. פתחי טרמינל ב-VS Code (Ctrl+`) והריצי:</p>
+        <div class="cmd">npm install -g @anthropic-ai/claude-code</div>
+      </div>
+
+      <div class="note warn"><i class="ti ti-credit-card"></i><span>Claude Code דורש מנוי <strong>Claude Pro</strong> — מינימום $20 לחודש. ניתן להתקין ולהתחבר ישירות מתוך VS Code.</span></div>
+      <div class="note info"><i class="ti ti-language-hiragana"></i><span>תוסף מומלץ לנוחות בעברית: <a href="https://marketplace.visualstudio.com/items?itemName=yechielby.claude-code-rtl" target="_blank">Claude Code RTL</a> — מייעל את הממשק לכתיבה מימין לשמאל.</span></div>
+    </div>
+  </section>
+
+  <!-- STEP 6 -->
+  <section class="step">
+    <div class="sh">
+      <div class="snum done">6</div>
+      <div class="stitle">התחברות ואימות (Login)<small>השלב האחרון — את כמעט שם!</small></div>
+    </div>
+    <div class="sb">
+      <p>כדי ש-Claude יוכל לעבוד, את צריכה להתחבר לחשבון שלך:</p>
+      <ol class="sl">
+        <li>בטרמינל, הקלידי את המילה:</li>
+      </ol>
+      <div class="cmd">claude</div>
+      <ol class="sl" start="2">
+        <li>יופיע קישור בדפדפן — התחברי עם חשבון <strong>Claude Pro</strong> או ה-<strong>API Key</strong> שלך.</li>
+        <li>כשהטרמינל מציג <strong>Ready</strong> — סיימת את ההתקנה ואת מוכנה לפתח! 🎉</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="step">
+    <div class="sh">
+      <div class="snum"><i class="ti ti-checklist" style="font-size:18px;"></i></div>
+      <div class="stitle">סיכום — כל הכלים במקום אחד</div>
+    </div>
+    <div class="sb">
+      <div class="sum-grid">
+        <div class="sum-row">
+          <div class="sum-ic"><i class="ti ti-code"></i></div>
+          <div class="sum-b"><strong>VS Code</strong><span>עורך הקוד המרכזי</span><code>code.visualstudio.com</code></div>
+        </div>
+        <div class="sum-row">
+          <div class="sum-ic"><i class="ti ti-git-branch"></i></div>
+          <div class="sum-b"><strong>Git</strong><span>ניהול גרסאות והעלאה לענן</span><code>git-scm.com/downloads</code></div>
+        </div>
+        <div class="sum-row">
+          <div class="sum-ic"><i class="ti ti-brand-nodejs"></i></div>
+          <div class="sum-b"><strong>Node.js</strong><span>סביבת הרצה לפקודות (גרסת LTS)</span><code>nodejs.org</code></div>
+        </div>
+        <div class="sum-row">
+          <div class="sum-ic"><i class="ti ti-brand-github"></i></div>
+          <div class="sum-b"><strong>GitHub</strong><span>אחסון הקוד בענן</span><code>github.com</code></div>
+        </div>
+        <div class="sum-row">
+          <div class="sum-ic"><i class="ti ti-robot"></i></div>
+          <div class="sum-b"><strong>Claude Code</strong><span>סוכן ה-AI שכותב איתנו קוד</span><code>npm install -g @anthropic-ai/claude-code</code></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="fl">יהודית ברדוגו</div>
+    <div class="fs">מערכות מותאמות אישית · נבנות בדיוק</div>
+    <div class="ft">© 2026 — כל הזכויות שמורות</div>
+  </footer>
+
+</div>
+</body>
+</html>
