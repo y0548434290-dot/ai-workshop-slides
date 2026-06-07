@@ -33,12 +33,13 @@ body{font-family:'Heebo',-apple-system,sans-serif;background:var(--canvas);color
 .note{display:flex;gap:10px;align-items:center;background:var(--indigo-50);color:var(--indigo-700);border-radius:14px;padding:13px 18px;margin:26px 0 6px;font-size:14.5px;}
 .note i{font-size:20px;flex-shrink:0;}
 
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px;}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:22px;}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px 22px;display:flex;flex-direction:column;box-shadow:0 6px 26px -16px rgba(38,33,92,.22);transition:transform .18s ease,box-shadow .18s ease;border-top:4px solid var(--ac);}
 .card:hover{transform:translateY(-4px);box-shadow:0 18px 44px -20px rgba(38,33,92,.3);}
 .card.indigo{--ac:var(--indigo-700);--acbg:var(--indigo-50);}
 .card.teal{--ac:var(--teal-700);--acbg:var(--teal-50);}
 .card.rose{--ac:var(--rose-700);--acbg:var(--rose-50);}
+.card.amber{--ac:#854F0B;--acbg:#FAEEDA;}
 .card .ic{width:54px;height:54px;border-radius:15px;background:var(--acbg);display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
 .card .ic i{font-size:28px;color:var(--ac);}
 .card .num{font-size:12px;font-weight:700;color:var(--ac);letter-spacing:.5px;}
@@ -67,7 +68,7 @@ body{font-family:'Heebo',-apple-system,sans-serif;background:var(--canvas);color
   <header class="hero">
     <div class="hero-inner">
       <div class="hero-badge"><i class="ti ti-presentation"></i>סדנת מאסטר-קלאס · פיתוח עם AI</div>
-      <h1>שלוש המצגות שלך — במקום אחד</h1>
+      <h1>כל החומרים שלך — במקום אחד</h1>
       <p>בחרי מצגת ופתחי אותה. כל הקישורים — למצגות, ל-PDF ולכלים החיצוניים — נפתחים בלשונית/דפדפן חיצוני.</p>
     </div>
   </header>
@@ -75,6 +76,17 @@ body{font-family:'Heebo',-apple-system,sans-serif;background:var(--canvas);color
   <div class="note"><i class="ti ti-external-link"></i><span>טיפ: לחיצה על "פתחי מצגת" פותחת בלשונית חדשה. כל קישורי הכלים בתוך המצגות (VS Code, GitHub, Base44 ועוד) נפתחים אף הם בדפדפן חיצוני.</span></div>
 
   <div class="grid">
+
+    <article class="card amber">
+      <div class="ic"><i class="ti ti-file-text"></i></div>
+      <div class="num">מדריך מקורי</div>
+      <h3>מדריך התקנה — המקור</h3>
+      <p>המדריך המקורי של הסדנה: ששת השלבים להתקנת סביבת העבודה, בעיצוב המקורי.</p>
+      <div class="meta"><i class="ti ti-list-numbers"></i>6 שלבים</div>
+      <div class="actions">
+        <a class="btn btn-main" href="installation-guide.html" target="_blank" rel="noopener noreferrer external"><i class="ti ti-player-play"></i>פתחי מדריך</a>
+      </div>
+    </article>
 
     <article class="card indigo">
       <div class="ic"><i class="ti ti-download"></i></div>
