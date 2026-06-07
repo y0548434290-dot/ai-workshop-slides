@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בנייה עם AI בדפדפן — Base44 · Lovable · Zite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.1/dist/tabler-icons.min.css">
+<style>
+:root{
+  --indigo-50:#EEEDFE; --indigo-100:#CECBF6; --indigo-300:#7F77DD;
+  --indigo-600:#534AB7; --indigo-700:#3C3489; --indigo-900:#26215C;
+  --teal-700:#0F766E; --teal-50:#E6F4F1; --teal-300:#5EBFB3;
+  --ink:#1a1626; --muted:#6b6577; --faint:#9a94a6;
+  --line:#e8e5ef; --line-soft:#f1eff7;
+  --paper:#ffffff; --canvas:#f7f5fc;
+  --blue-bg:#E6F1FB; --blue-tx:#0C447C; --blue-ic:#185FA5;
+  --amber-bg:#FAEEDA; --amber-tx:#633806; --amber-ic:#854F0B;
+  --green-bg:#EAF3DE; --green-tx:#3B6D11;
+  --coral-bg:#FAECE7; --coral-tx:#993C1D;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'Heebo',-apple-system,sans-serif;background:#0d2422;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden;}
+
+.stage-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
+.deck{position:relative;width:1280px;height:720px;flex:0 0 auto;transform-origin:center center;}
+.slide{position:absolute;inset:0;background:var(--canvas);border-radius:18px;overflow:hidden;padding:62px 70px 70px;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .35s ease;box-shadow:0 30px 80px -30px rgba(0,0,0,.6);}
+.slide.active{opacity:1;visibility:visible;}
+.slide.cover{background:linear-gradient(135deg,var(--teal-700),#0a3d3a 60%,var(--indigo-900));color:#fff;}
+.slide:not(.cover)::before{content:"";position:absolute;top:-160px;left:-110px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(94,191,179,.16),transparent 70%);pointer-events:none;}
+.slide:not(.cover)::after{content:"";position:absolute;bottom:-180px;right:-120px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(83,74,183,.08),transparent 70%);pointer-events:none;}
+
+.s-eyebrow{position:relative;z-index:2;display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--teal-700);margin-bottom:6px;}
+.s-eyebrow .badge-tool{background:var(--teal-700);color:#fff;padding:4px 13px;border-radius:9px;font-weight:900;font-size:14px;box-shadow:0 6px 14px -6px rgba(15,118,110,.6);display:inline-flex;align-items:center;gap:6px;}
+.s-eyebrow .badge-concept{background:var(--amber-bg);color:var(--amber-tx);padding:4px 12px;border-radius:100px;font-size:13px;}
+.s-title{position:relative;z-index:2;font-size:34px;font-weight:900;color:var(--ink);line-height:1.18;letter-spacing:-.4px;margin-bottom:6px;}
+.s-sub{position:relative;z-index:2;font-size:17px;font-weight:300;color:var(--muted);margin-bottom:20px;}
+.s-body{position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;justify-content:flex-start;}
+
+.p{font-size:18px;color:var(--ink);line-height:1.6;}
+.p.dim{color:var(--muted);font-size:17px;}
+ol.sl,ul.sl{padding-right:24px;display:flex;flex-direction:column;gap:9px;}
+ol.sl li,ul.sl li{font-size:17px;color:var(--ink);line-height:1.5;padding-right:6px;}
+ol.sl li::marker{color:var(--teal-700);font-weight:700;}
+ul.sl li::marker{color:var(--teal-300);}
+strong{font-weight:700;}
+.hl{color:var(--teal-700);font-weight:700;}
+
+.note{display:flex;gap:12px;border-radius:14px;padding:13px 16px;align-items:flex-start;font-size:16px;line-height:1.5;}
+.note i{font-size:22px;flex-shrink:0;margin-top:1px;}
+.note.info{background:var(--blue-bg);color:var(--blue-tx);}.note.info i{color:var(--blue-ic);}
+.note.warn{background:var(--amber-bg);color:var(--amber-tx);}.note.warn i{color:var(--amber-ic);}
+.note.good{background:var(--green-bg);color:var(--green-tx);}.note.good i{color:var(--green-tx);}
+.note.teal{background:var(--teal-50);color:var(--teal-700);}.note.teal i{color:var(--teal-700);}
+
+/* cards */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 4px 20px -14px rgba(38,33,92,.2);}
+.card.t{border-color:var(--teal-300);background:linear-gradient(180deg,#f1faf8,#fff);}
+.card h4{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.card h4 i{font-size:22px;color:var(--teal-700);}
+.card p{font-size:15px;color:var(--muted);line-height:1.5;}
+.card .meta{font-size:14px;color:var(--ink);margin-top:8px;line-height:1.7;}
+.card .meta b{color:var(--teal-700);}
+.card .price{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--indigo-600);direction:ltr;margin-top:8px;display:block;}
+
+/* role/flow grid */
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px;}
+.role{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 14px;text-align:center;box-shadow:0 4px 18px -14px rgba(38,33,92,.25);}
+.role i{font-size:32px;color:var(--teal-700);}
+.role strong{display:block;font-size:16px;margin-top:8px;color:var(--ink);}
+.role span{display:block;font-size:13px;color:var(--muted);margin-top:3px;line-height:1.35;}
+
+/* breakdown / decision rows */
+.brk{display:flex;flex-direction:column;gap:9px;}
+.brk-row{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 16px;}
+.brk-row .tag{font-size:14px;color:#fff;background:var(--teal-700);font-weight:700;padding:4px 12px;border-radius:8px;flex-shrink:0;}
+.brk-row span{font-size:16px;color:var(--ink);line-height:1.45;}
+
+/* summary */
+.sum-grid{display:flex;flex-direction:column;gap:9px;}
+.sum-row{display:flex;align-items:center;gap:13px;padding:12px 16px;background:#fff;border:1px solid var(--line-soft);border-radius:13px;}
+.sum-ic{width:42px;height:42px;border-radius:11px;background:var(--teal-50);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sum-ic i{font-size:22px;color:var(--teal-700);}
+.sum-b{min-width:0;}
+.sum-b strong{font-size:16px;color:var(--ink);}
+.sum-b span{display:block;font-size:13.5px;color:var(--muted);}
+.sum-b code{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--indigo-600);direction:ltr;display:inline-block;margin-top:1px;}
+.sum-b code a{color:inherit;border-bottom:1px dashed var(--indigo-100);}
+.sum-b code a:hover{border-color:var(--indigo-600);}
+
+a{color:var(--teal-700);font-weight:500;text-decoration:none;border-bottom:1.5px solid var(--teal-300);}
+.cover a{color:#fff;border-color:rgba(255,255,255,.4);}
+
+/* cover */
+.cover .c-inner{position:relative;z-index:2;margin:auto 0;}
+.cover-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:8px 18px;border-radius:100px;font-size:15px;font-weight:500;margin-bottom:26px;}
+.cover h1{font-size:52px;font-weight:900;line-height:1.15;letter-spacing:-.8px;margin-bottom:18px;}
+.cover .lead{font-size:20px;font-weight:300;color:rgba(255,255,255,.85);max-width:760px;line-height:1.55;}
+.cover .tag-list{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.cover .tag-list span{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:6px 16px;font-size:15px;font-weight:500;}
+.cover .sig{display:flex;align-items:center;gap:16px;margin-top:36px;padding-top:26px;border-top:1px solid rgba(255,255,255,.16);}
+.sig-av{width:58px;height:58px;border-radius:50%;background:#fff;color:var(--teal-700);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:21px;}
+.sig-txt strong{display:block;font-size:19px;font-weight:700;}
+.sig-txt span{font-size:14px;color:rgba(255,255,255,.78);font-weight:300;}
+.cover::before{content:"";position:absolute;top:-70px;right:-70px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.06);}
+.cover::after{content:"";position:absolute;bottom:-110px;left:-50px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.05);}
+
+/* nav */
+.nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:100px;}
+.nav button{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.nav button:hover{background:rgba(255,255,255,.32);}
+.nav .count{color:#fff;font-size:14px;font-weight:500;min-width:54px;text-align:center;font-family:'JetBrains Mono',monospace;}
+.hint{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;color:rgba(255,255,255,.55);font-size:13px;}
+
+body.print{overflow:visible;background:#fff;}
+body.print .stage-wrap{position:static;display:block;}
+body.print .deck{width:auto;height:auto;transform:none!important;}
+body.print .nav,body.print .hint{display:none;}
+body.print .slide{position:relative;inset:auto;width:1280px;height:720px;opacity:1!important;visibility:visible!important;border-radius:0;box-shadow:none;break-after:page;page-break-after:always;margin:0;}
+@media print{@page{size:1280px 720px;margin:0;}body{background:#fff;}}
+</style>
+</head>
+<body>
+<div class="stage-wrap">
+  <div class="deck" id="deck">
+
+    <!-- 1 · COVER -->
+    <section class="slide cover active">
+      <div class="c-inner">
+        <div class="cover-badge"><i class="ti ti-wand"></i>ללא קוד · ישירות מהדפדפן</div>
+        <h1>בנייה עם AI<br>בלי להתקין כלום</h1>
+        <p class="lead">דור חדש של כלים: מתארים בשפה חופשית מה רוצים — וה-AI בונה אפליקציה שלמה. נכיר שלושה כלים מובילים ונבין מתי כדאי להשתמש בכל אחד.</p>
+        <div class="tag-list"><span>Base44</span><span>Lovable</span><span>Zite</span></div>
+        <div class="sig">
+          <div class="sig-av">יב</div>
+          <div class="sig-txt"><strong>יהודית ברדוגו</strong><span>מערכות מותאמות אישית · נבנות בדיוק</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · INTRO -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-bolt"></i>מבוא</div>
+      <div class="s-title">"Vibe Coding" — בנייה בשפה רגילה</div>
+      <div class="s-sub">בניגוד למסלול המקצועי (VS Code, Git, Claude Code, Vercel) — כאן אין מה להתקין.</div>
+      <div class="s-body">
+        <p class="p">במקום לכתוב קוד, פשוט <span class="hl">מתארים בעברית/אנגלית</span> איזו אפליקציה רוצים, וה-AI מייצר אותה — כולל עיצוב, לוגיקה, מסד נתונים ואחסון.</p>
+        <ul class="sl">
+          <li><strong>הכל בדפדפן</strong> — נכנסים לאתר ומתחילים, בלי התקנות.</li>
+          <li><strong>מהיר במיוחד</strong> — אפליקציה ראשונה תוך דקות.</li>
+          <li><strong>מתאים גם ללא-טכניות</strong> — לא צריך רקע בתכנות.</li>
+        </ul>
+        <div class="note teal"><i class="ti ti-info-circle"></i><span>שלושת הכלים שנכיר: <strong>Base44</strong>, <strong>Lovable</strong> ו-<strong>Zite</strong> — כל אחד עם חוזק אחר וקהל יעד אחר.</span></div>
+      </div>
+    </section>
+
+    <!-- 3 · CONCEPT -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-concept">מושג רקע</span></div>
+      <div class="s-title">איך זה עובד בפועל?</div>
+      <div class="s-sub">מתיאור במילים — לאפליקציה חיה, אוטומטית.</div>
+      <div class="s-body">
+        <div class="roles">
+          <div class="role"><i class="ti ti-message-2"></i><strong>1 · מתארים</strong><span>כותבים בשפה חופשית מה האפליקציה צריכה לעשות</span></div>
+          <div class="role"><i class="ti ti-cpu"></i><strong>2 · ה-AI בונה</strong><span>מייצר ממשק, לוגיקה, מסד נתונים והתחברות</span></div>
+          <div class="role"><i class="ti ti-rocket"></i><strong>3 · עולה לאוויר</strong><span>מתפרסם בכתובת חיה — מוכן לשימוש ולשיתוף</span></div>
+        </div>
+        <div class="note teal"><i class="ti ti-adjustments"></i><span>בכל שלב אפשר לבקש שינויים בשפה רגילה ("תוסיפי כפתור", "תשני צבע") — וה-AI מעדכן את האפליקציה.</span></div>
+      </div>
+    </section>
+
+    <!-- 4 · BASE44 -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-tool"><i class="ti ti-rocket"></i>Base44</span>מחולל אפליקציות</div>
+      <div class="s-title">Base44 — האפליקציה שלך בדקות</div>
+      <div class="s-sub">מחולל ישראלי שהפך לסנסציה — נרכש ע"י Wix תמורת 80 מיליון דולר.</div>
+      <div class="s-body">
+        <p class="p">מתארים מה רוצים, ו-Base44 בונה אפליקציה שלמה — עם <span class="hl">מסד נתונים, התחברות משתמשים (auth), אחסון ו-API</span> — הכל אוטומטית.</p>
+        <ul class="sl">
+          <li><strong>הכי מהיר ללא-טכניות</strong> — בלי שום החלטת הגדרה טכנית.</li>
+          <li><strong>פרסום בלחיצה אחת</strong> דרך תשתית Wix.</li>
+          <li><strong>~25 אינטגרציות מובנות</strong> — Slack, Google Workspace, Salesforce ועוד.</li>
+        </ul>
+        <div class="note good"><i class="ti ti-circle-check"></i><span>בוחרים בו כשרוצים אפליקציה עובדת <strong>מהר</strong>, בלי לגעת בקוד. מתחילים ב-<a href="https://base44.com" target="_blank" rel="noopener noreferrer">base44.com</a>.</span></div>
+      </div>
+    </section>
+
+    <!-- 5 · LOVABLE -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-tool"><i class="ti ti-heart-code"></i>Lovable</span>מחולל full-stack</div>
+      <div class="s-title">Lovable — קוד אמיתי, מוכן לייצור</div>
+      <div class="s-sub">גם בונה מתיאור, אבל נותן לך גישה לקוד עצמו — והכי חזק לבניית מוצר SaaS.</div>
+      <div class="s-body">
+        <p class="p">מייצר <span class="hl">קוד אמיתי ונייד</span> שאפשר לקחת לכל מקום — לא "קופסה שחורה" סגורה.</p>
+        <ul class="sl">
+          <li><strong>אינטגרציה חלקה עם Supabase</strong> — מסד נתונים והתחברות מובנים.</li>
+          <li><strong>סנכרון ל-GitHub</strong> — הקוד שלך נשמר ונייד (חשוב להמשך!).</li>
+          <li><strong>מסלול חזק</strong> מאב-טיפוס ועד מוצר אמיתי בייצור (production).</li>
+        </ul>
+        <div class="note info"><i class="ti ti-code"></i><span>הבחירה כשרוצים <strong>גמישות ושליטה בקוד</strong>. מתחילים ב-<a href="https://lovable.dev" target="_blank" rel="noopener noreferrer">lovable.dev</a>.</span></div>
+      </div>
+    </section>
+
+    <!-- 6 · ZITE -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-tool"><i class="ti ti-layout-dashboard"></i>Zite</span>כלים עסקיים</div>
+      <div class="s-title">Zite — כלים פנים-ארגוניים ודשבורדים</div>
+      <div class="s-sub">מחולל no-code שמתמקד בכלים שאנשים אמיתיים משתמשים בהם בארגון.</div>
+      <div class="s-body">
+        <p class="p">בונה אפליקציות עסקיות מתיאור — <span class="hl">דשבורדים, פורטלים וכלים פנימיים</span> — עם הרשאות ומסד נתונים כבר מההתחלה.</p>
+        <ul class="sl">
+          <li><strong>מסד נתונים, התחברות ו-Workflows מובנים.</strong></li>
+          <li><strong>מתחבר ל-Google Sheets, Airtable, Salesforce ו-Slack.</strong></li>
+          <li><strong>יציב</strong> במעבר מאב-טיפוס לשימוש אמיתי בארגון.</li>
+        </ul>
+        <div class="note teal"><i class="ti ti-credit-card"></i><span>תמחור: <strong>חינם</strong> להתחלה · Pro ‎$15/חודש · Business ‎$55/חודש. פרטים ב-<a href="https://www.zite.com" target="_blank" rel="noopener noreferrer">zite.com</a>.</span></div>
+      </div>
+    </section>
+
+    <!-- 7 · COMPARISON -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-columns-3"></i>השוואה</div>
+      <div class="s-title">שלושתם במבט אחד</div>
+      <div class="s-body">
+        <div class="cols3">
+          <div class="card t">
+            <h4><i class="ti ti-rocket"></i>Base44</h4>
+            <p>הכי מהיר. הכל מובנה ומפורסם דרך Wix.</p>
+            <div class="meta"><b>הכי טוב ל:</b> לא-טכניות שרוצות תוצאה מהירה.</div>
+            <span class="price">tier חינם להתחלה</span>
+          </div>
+          <div class="card t">
+            <h4><i class="ti ti-heart-code"></i>Lovable</h4>
+            <p>נותן קוד אמיתי + סנכרון GitHub.</p>
+            <div class="meta"><b>הכי טוב ל:</b> יזמיות SaaS שרוצות שליטה ומסלול לייצור.</div>
+            <span class="price">tier חינם · בתשלום להמשך</span>
+          </div>
+          <div class="card t">
+            <h4><i class="ti ti-layout-dashboard"></i>Zite</h4>
+            <p>כלים פנים-ארגוניים, דשבורדים והרשאות.</p>
+            <div class="meta"><b>הכי טוב ל:</b> כלים פנימיים לעסק / לצוות.</div>
+            <span class="price">חינם · $15 · $55 לחודש</span>
+          </div>
+        </div>
+        <div class="note teal"><i class="ti ti-bulb"></i><span>אין "מנצח" אחד — הבחירה תלויה <strong>במה שאת בונה</strong> ובכמה שליטה בקוד את צריכה.</span></div>
+      </div>
+    </section>
+
+    <!-- 8 · WHICH TO CHOOSE -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-route-2"></i>החלטה</div>
+      <div class="s-title">אז איזה כלי לבחור?</div>
+      <div class="s-sub">שלוש שאלות פשוטות שמובילות לתשובה.</div>
+      <div class="s-body">
+        <div class="brk">
+          <div class="brk-row"><span class="tag">Base44</span><span>רוצה אפליקציה עובדת <strong>הכי מהר</strong>, בלי לגעת בקוד ובלי כאב ראש טכני.</span></div>
+          <div class="brk-row"><span class="tag">Lovable</span><span>בונה <strong>מוצר SaaS</strong> ורוצה גישה לקוד ומסלול מסודר לייצור.</span></div>
+          <div class="brk-row"><span class="tag">Zite</span><span>צריכה <strong>כלי פנימי לעסק</strong> — דשבורד, פורטל או כלי ניהול עם הרשאות.</span></div>
+        </div>
+        <div class="note info"><i class="ti ti-school"></i><span>טיפ להוראה: ללמוד <strong>כלי אחד לעומק</strong> ולהזכיר את השאר — עדיף מלפזר על שלושתם בבת אחת.</span></div>
+      </div>
+    </section>
+
+    <!-- 9 · BRIDGE -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-arrow-ramp-right-2"></i>הגשר</div>
+      <div class="s-title">מ-no-code למסלול המקצועי</div>
+      <div class="s-sub">הכלים האלה לא מחליפים את הסביבה המקצועית — הם נקודת ההתחלה שלה.</div>
+      <div class="s-body">
+        <ol class="sl">
+          <li><strong>Lovable מסנכרן את הקוד ל-GitHub</strong> — הקוד שלך כבר בענן.</li>
+          <li>פותחים את הפרויקט ב-<strong>VS Code</strong> וממשיכים לפתח עם <strong>Claude Code</strong>.</li>
+          <li>מעלים את הגרסה לאוויר עם <strong>Vercel</strong>.</li>
+        </ol>
+        <div class="note good"><i class="ti ti-stairs-up"></i><span>כך מתחילים <strong>מהר</strong> ב-no-code, וכשהפרויקט "גדל" עוברים לשליטה מלאה — <strong>בלי להתחיל מחדש</strong>.</span></div>
+        <div class="note teal"><i class="ti ti-info-circle"></i><span>Base44 ו-Zite מארחים בעצמם (Wix / תשתית מובנית), כך שאפשר גם להישאר אצלם לאורך כל הדרך.</span></div>
+      </div>
+    </section>
+
+    <!-- 10 · SUMMARY -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-checklist"></i>סיכום</div>
+      <div class="s-title">שלושת הכלים והקישורים</div>
+      <div class="s-body">
+        <div class="sum-grid">
+          <div class="sum-row"><div class="sum-ic"><i class="ti ti-rocket"></i></div><div class="sum-b"><strong>Base44</strong><span>הכי מהיר ללא-טכניות · הכל מובנה · נרכש ע"י Wix</span><code><a href="https://base44.com" target="_blank" rel="noopener noreferrer">base44.com</a></code></div></div>
+          <div class="sum-row"><div class="sum-ic"><i class="ti ti-heart-code"></i></div><div class="sum-b"><strong>Lovable</strong><span>קוד אמיתי · סנכרון GitHub · מסלול לייצור</span><code><a href="https://lovable.dev" target="_blank" rel="noopener noreferrer">lovable.dev</a></code></div></div>
+          <div class="sum-row"><div class="sum-ic"><i class="ti ti-layout-dashboard"></i></div><div class="sum-b"><strong>Zite</strong><span>כלים פנים-ארגוניים ודשבורדים · חינם / $15 / $55</span><code><a href="https://www.zite.com" target="_blank" rel="noopener noreferrer">zite.com</a></code></div></div>
+        </div>
+        <div class="note teal"><i class="ti ti-bulb"></i><span>הדרך המומלצת: בוחרים כלי לפי הצורך, בונים מהר, וכשצריך — עוברים למסלול המקצועי דרך GitHub.</span></div>
+      </div>
+    </section>
+
+    <!-- 11 · END -->
+    <section class="slide cover">
+      <div class="c-inner">
+        <div class="cover-badge"><i class="ti ti-confetti"></i>מוכנות לבנות</div>
+        <h1>תבחרי כלי — ותתחילי לבנות 🚀</h1>
+        <p class="lead">מהרעיון לאפליקציה חיה, בלי שורת קוד אחת. וכשתרצי יותר שליטה — המסלול המקצועי מחכה.</p>
+        <div class="tag-list"><span>Base44</span><span>Lovable</span><span>Zite</span></div>
+        <div class="sig">
+          <div class="sig-av">יב</div>
+          <div class="sig-txt"><strong>יהודית ברדוגו</strong><span>מערכות מותאמות אישית · נבנות בדיוק · © 2026</span></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="hint">← → / רווח למעבר בין שקופיות · F להגדלה</div>
+<div class="nav">
+  <button id="prev" aria-label="הקודם"><i class="ti ti-chevron-right"></i></button>
+  <span class="count"><span id="cur">1</span> / <span id="total">11</span></span>
+  <button id="next" aria-label="הבא"><i class="ti ti-chevron-left"></i></button>
+</div>
+
+<script>
+const PRINT = new URLSearchParams(location.search).has('print');
+const slides = Array.from(document.querySelectorAll('.slide'));
+const deck = document.getElementById('deck');
+let idx = 0;
+if (PRINT) {
+  document.body.classList.add('print');
+} else {
+  document.getElementById('total').textContent = slides.length;
+  function show(n){ idx=Math.max(0,Math.min(slides.length-1,n)); slides.forEach((s,i)=>s.classList.toggle('active',i===idx)); document.getElementById('cur').textContent=idx+1; }
+  function next(){ show(idx+1); } function prev(){ show(idx-1); }
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowLeft'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); next(); }
+    else if(e.key==='ArrowRight'||e.key==='PageUp'){ e.preventDefault(); prev(); }
+    else if(e.key==='Home'){ show(0); } else if(e.key==='End'){ show(slides.length-1); }
+    else if(e.key==='f'||e.key==='F'){ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+  });
+  document.getElementById('next').addEventListener('click', next);
+  document.getElementById('prev').addEventListener('click', prev);
+  deck.addEventListener('click', e=>{ if(!e.target.closest('a')) next(); });
+  function fit(){ const pad=40; deck.style.transform='scale('+Math.min((innerWidth-pad)/1280,(innerHeight-pad)/720)+')'; }
+  addEventListener('resize', fit); fit(); show(0);
+}
+</script>
+</body>
+</html>
