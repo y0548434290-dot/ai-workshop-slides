@@ -15,6 +15,7 @@ const DECKS = [
   { html: 'slides.html',       pdf: 'claude-setup-guide.pdf', png: 'slides-png' },
   { html: 'ai-builders.html',  pdf: 'ai-builders-guide.pdf',  png: 'ai-builders-png' },
   { html: 'understanding-systems.html', pdf: 'understanding-systems-guide.pdf', png: 'understanding-png' },
+  { html: 'claude-code-web.html', pdf: 'claude-code-web-guide.pdf', png: 'claude-code-web-png' },
 ];
 
 const browser = await chromium.launch();

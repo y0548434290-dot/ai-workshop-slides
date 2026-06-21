@@ -33,13 +33,14 @@ body{font-family:'Heebo',-apple-system,sans-serif;background:var(--canvas);color
 .note{display:flex;gap:10px;align-items:center;background:var(--indigo-50);color:var(--indigo-700);border-radius:14px;padding:13px 18px;margin:26px 0 6px;font-size:14.5px;}
 .note i{font-size:20px;flex-shrink:0;}
 
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:22px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px;}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px 22px;display:flex;flex-direction:column;box-shadow:0 6px 26px -16px rgba(38,33,92,.22);transition:transform .18s ease,box-shadow .18s ease;border-top:4px solid var(--ac);}
 .card:hover{transform:translateY(-4px);box-shadow:0 18px 44px -20px rgba(38,33,92,.3);}
 .card.indigo{--ac:var(--indigo-700);--acbg:var(--indigo-50);}
 .card.teal{--ac:var(--teal-700);--acbg:var(--teal-50);}
 .card.rose{--ac:var(--rose-700);--acbg:var(--rose-50);}
 .card.amber{--ac:#854F0B;--acbg:#FAEEDA;}
+.card.clay{--ac:#9A3412;--acbg:#FFF7ED;}
 .card .ic{width:54px;height:54px;border-radius:15px;background:var(--acbg);display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
 .card .ic i{font-size:28px;color:var(--ac);}
 .card .num{font-size:12px;font-weight:700;color:var(--ac);letter-spacing:.5px;}
@@ -121,6 +122,18 @@ body{font-family:'Heebo',-apple-system,sans-serif;background:var(--canvas);color
       <div class="actions">
         <a class="btn btn-main" href="understanding-systems.html" target="_blank" rel="noopener noreferrer external"><i class="ti ti-player-play"></i>פתחי מצגת</a>
         <a class="btn btn-pdf" href="output/understanding-systems-guide.pdf" target="_blank" rel="noopener noreferrer external"><i class="ti ti-file-type-pdf"></i>PDF</a>
+      </div>
+    </article>
+
+    <article class="card clay">
+      <div class="ic"><i class="ti ti-cloud-code"></i></div>
+      <div class="num">מצגת 4</div>
+      <h3>Claude Code בדפדפן</h3>
+      <p>לבנות עם Claude Code ישירות בדפדפן ובענן (claude.ai/code) — בלי VS Code, גם מהנייד.</p>
+      <div class="meta"><i class="ti ti-stack-2"></i>14 שקופיות</div>
+      <div class="actions">
+        <a class="btn btn-main" href="claude-code-web.html" target="_blank" rel="noopener noreferrer external"><i class="ti ti-player-play"></i>פתחי מצגת</a>
+        <a class="btn btn-pdf" href="output/claude-code-web-guide.pdf" target="_blank" rel="noopener noreferrer external"><i class="ti ti-file-type-pdf"></i>PDF</a>
       </div>
     </article>
 
