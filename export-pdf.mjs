@@ -16,6 +16,7 @@ const DECKS = [
   { html: 'ai-builders.html',  pdf: 'ai-builders-guide.pdf',  png: 'ai-builders-png' },
   { html: 'understanding-systems.html', pdf: 'understanding-systems-guide.pdf', png: 'understanding-png' },
   { html: 'claude-code-web.html', pdf: 'claude-code-web-guide.pdf', png: 'claude-code-web-png' },
+  { html: 'ship-to-vercel.html', pdf: 'ship-to-vercel-guide.pdf', png: 'ship-to-vercel-png' },
 ];
 
 const browser = await chromium.launch();

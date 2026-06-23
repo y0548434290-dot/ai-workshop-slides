@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מהקוד לאוויר — Git · GitHub · Vercel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.34.1/dist/tabler-icons.min.css">
+<style>
+:root{
+  --em-700:#047857; --em-600:#059669; --em-500:#10B981; --em-300:#6EE7AA; --em-50:#ECFDF5;
+  --indigo-700:#3C3489; --indigo-900:#26215C;
+  --ink:#1a1626; --muted:#6b6577; --faint:#9a94a6;
+  --line:#e8e5ef; --line-soft:#f1eff7;
+  --paper:#ffffff; --canvas:#f5faf7;
+  --blue-bg:#E6F1FB; --blue-tx:#0C447C; --blue-ic:#185FA5;
+  --amber-bg:#FAEEDA; --amber-tx:#633806; --amber-ic:#854F0B;
+  --green-bg:#EAF3DE; --green-tx:#3B6D11;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'Heebo',-apple-system,sans-serif;background:#04261c;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden;}
+
+.stage-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
+.deck{position:relative;width:1280px;height:720px;flex:0 0 auto;transform-origin:center center;}
+.slide{position:absolute;inset:0;background:var(--canvas);border-radius:18px;overflow:hidden;padding:62px 70px 70px;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .35s ease;box-shadow:0 30px 80px -30px rgba(0,0,0,.6);}
+.slide.active{opacity:1;visibility:visible;}
+.slide.cover{background:linear-gradient(135deg,var(--em-700),#064E3B 55%,var(--indigo-900));color:#fff;}
+.slide:not(.cover)::before{content:"";position:absolute;top:-160px;left:-110px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(110,231,170,.18),transparent 70%);pointer-events:none;}
+.slide:not(.cover)::after{content:"";position:absolute;bottom:-180px;right:-120px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(4,120,87,.08),transparent 70%);pointer-events:none;}
+
+.s-eyebrow{position:relative;z-index:2;display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--em-700);margin-bottom:6px;}
+.s-eyebrow .badge-concept{background:var(--amber-bg);color:var(--amber-tx);padding:4px 12px;border-radius:100px;font-size:13px;}
+.s-eyebrow .badge-step{background:var(--em-700);color:#fff;width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;}
+.s-title{position:relative;z-index:2;font-size:34px;font-weight:900;color:var(--ink);line-height:1.18;letter-spacing:-.4px;margin-bottom:6px;}
+.s-sub{position:relative;z-index:2;font-size:17px;font-weight:300;color:var(--muted);margin-bottom:20px;}
+.s-body{position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;justify-content:flex-start;}
+
+.p{font-size:18px;color:var(--ink);line-height:1.6;}
+.p.dim{color:var(--muted);font-size:17px;}
+ol.sl,ul.sl{padding-right:24px;display:flex;flex-direction:column;gap:9px;}
+ol.sl li,ul.sl li{font-size:17px;color:var(--ink);line-height:1.5;padding-right:6px;}
+ol.sl li::marker{color:var(--em-700);font-weight:700;}
+ul.sl li::marker{color:var(--em-500);}
+strong{font-weight:700;}
+.hl{color:var(--em-700);font-weight:700;}
+
+.note{display:flex;gap:12px;border-radius:14px;padding:13px 16px;align-items:flex-start;font-size:16px;line-height:1.5;}
+.note i{font-size:22px;flex-shrink:0;margin-top:1px;}
+.note.info{background:var(--blue-bg);color:var(--blue-tx);}.note.info i{color:var(--blue-ic);}
+.note.warn{background:var(--amber-bg);color:var(--amber-tx);}.note.warn i{color:var(--amber-ic);}
+.note.good{background:var(--green-bg);color:var(--green-tx);}.note.good i{color:var(--green-tx);}
+.note.em{background:var(--em-50);color:var(--em-700);}.note.em i{color:var(--em-600);}
+
+.codeblock{background:#1e1a2e;border-radius:12px;padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:16px;color:#6ee7aa;direction:ltr;text-align:left;border:1px solid #2c2740;line-height:1.7;white-space:pre;}
+
+.brk{display:flex;flex-direction:column;gap:9px;}
+.brk-row{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 16px;}
+.brk-row .tag{font-size:14px;color:#fff;background:var(--em-700);font-weight:700;padding:4px 12px;border-radius:8px;flex-shrink:0;white-space:nowrap;}
+.brk-row span{font-size:16px;color:var(--ink);line-height:1.4;}
+
+.prompt{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1.5px solid var(--em-300);border-radius:14px;padding:12px 16px;}
+.prompt i{color:var(--em-600);font-size:20px;flex-shrink:0;margin-top:1px;}
+.prompt span{font-size:16px;color:var(--ink);line-height:1.45;}
+.prompt b{color:var(--em-700);}
+
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px;}
+.role{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 14px;box-shadow:0 4px 18px -14px rgba(38,33,92,.25);text-align:center;}
+.role i{font-size:30px;color:var(--em-700);}
+.role strong{display:block;font-size:16px;margin-top:8px;color:var(--ink);}
+.role span{display:block;font-size:13.5px;color:var(--muted);margin-top:5px;line-height:1.4;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 4px 20px -14px rgba(38,33,92,.2);}
+.card.em{border-color:var(--em-300);background:linear-gradient(180deg,#f0fbf5,#fff);}
+.card h4{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.card h4 i{font-size:22px;color:var(--em-700);}
+.card p{font-size:14.5px;color:var(--muted);line-height:1.5;}
+
+.flow{display:flex;align-items:stretch;gap:0;margin-top:6px;}
+.flow-step{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 12px;text-align:center;box-shadow:0 4px 18px -14px rgba(38,33,92,.25);}
+.flow-step i{font-size:28px;color:var(--em-700);}
+.flow-step strong{display:block;font-size:15px;margin-top:6px;color:var(--ink);}
+.flow-step .en{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--em-600);direction:ltr;display:block;margin-top:2px;}
+.flow-step span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.3;}
+.flow-arrow{display:flex;align-items:center;color:var(--em-300);font-size:24px;padding:0 5px;}
+
+.sum-grid{display:flex;flex-direction:column;gap:9px;}
+.sum-row{display:flex;align-items:center;gap:13px;padding:11px 16px;background:#fff;border:1px solid var(--line-soft);border-radius:13px;}
+.sum-ic{width:42px;height:42px;border-radius:11px;background:var(--em-50);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sum-ic i{font-size:22px;color:var(--em-700);}
+.sum-b strong{font-size:16px;color:var(--ink);}
+.sum-b span{display:block;font-size:13.5px;color:var(--muted);}
+
+a{color:var(--em-700);font-weight:500;text-decoration:none;border-bottom:1.5px solid var(--em-300);}
+.cover a{color:#fff;border-color:rgba(255,255,255,.4);}
+
+.cover .c-inner{position:relative;z-index:2;margin:auto 0;}
+.cover-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:8px 18px;border-radius:100px;font-size:15px;font-weight:500;margin-bottom:26px;}
+.cover h1{font-size:50px;font-weight:900;line-height:1.16;letter-spacing:-.8px;margin-bottom:18px;}
+.cover .lead{font-size:20px;font-weight:300;color:rgba(255,255,255,.85);max-width:790px;line-height:1.55;}
+.cover .sig{display:flex;align-items:center;gap:16px;margin-top:38px;padding-top:26px;border-top:1px solid rgba(255,255,255,.16);}
+.sig-av{width:58px;height:58px;border-radius:50%;background:#fff;color:var(--em-700);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:21px;}
+.sig-txt strong{display:block;font-size:19px;font-weight:700;}
+.sig-txt span{font-size:14px;color:rgba(255,255,255,.78);font-weight:300;}
+.cover::before{content:"";position:absolute;top:-70px;right:-70px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.06);}
+.cover::after{content:"";position:absolute;bottom:-110px;left:-50px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.05);}
+
+.nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:100px;}
+.nav button{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.nav button:hover{background:rgba(255,255,255,.32);}
+.nav .count{color:#fff;font-size:14px;font-weight:500;min-width:54px;text-align:center;font-family:'JetBrains Mono',monospace;}
+.hint{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;color:rgba(255,255,255,.55);font-size:13px;}
+
+body.print{overflow:visible;background:#fff;}
+body.print .stage-wrap{position:static;display:block;}
+body.print .deck{width:auto;height:auto;transform:none!important;}
+body.print .nav,body.print .hint{display:none;}
+body.print .slide{position:relative;inset:auto;width:1280px;height:720px;opacity:1!important;visibility:visible!important;border-radius:0;box-shadow:none;break-after:page;page-break-after:always;margin:0;}
+@media print{@page{size:1280px 720px;margin:0;}body{background:#fff;}}
+</style>
+</head>
+<body>
+<div class="stage-wrap">
+  <div class="deck" id="deck">
+
+    <!-- 1 · COVER -->
+    <section class="slide cover active">
+      <div class="c-inner">
+        <div class="cover-badge"><i class="ti ti-rocket"></i>מהקוד לאוויר · Git → GitHub → Vercel</div>
+        <h1>מהקוד שלך — לאוויר</h1>
+        <p class="lead">בנית משהו נהדר ב-VS Code. עכשיו נראה איך <strong>שומרים</strong> אותו, <strong>מעלים</strong> לענן, ו<strong>מפרסמים</strong> אותו לאינטרנט — צעד אחר צעד, עד אתר חי שאפשר לשלוח לכולם.</p>
+        <div class="sig">
+          <div class="sig-av">יב</div>
+          <div class="sig-txt"><strong>יהודית ברדוגו</strong><span>מערכות מותאמות אישית · נבנות בדיוק</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · INTRO -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-package"></i>אחרי הבנייה</div>
+      <div class="s-title">בנית — עכשיו שולחים לעולם</div>
+      <div class="s-sub">כל מה שבנינו עד עכשיו יושב על המחשב שלך בלבד. כדי שאחרים יראו — צריך "לשלוח" אותו החוצה.</div>
+      <div class="s-body">
+        <ul class="sl">
+          <li><strong>Git</strong> — שומרים את העבודה כנקודת ציון (commit).</li>
+          <li><strong>GitHub</strong> — מעלים את הקוד לענן (push).</li>
+          <li><strong>Vercel</strong> — הופכים אותו לאתר חי בכתובת (deploy).</li>
+        </ul>
+        <div class="note em"><i class="ti ti-users"></i><span>זה בדיוק התהליך שמפתחים אמיתיים עושים כל יום — ואחרי הפעם הראשונה זה לוקח דקה.</span></div>
+      </div>
+    </section>
+
+    <!-- 3 · ROADMAP -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-map-2"></i>מפת הדרך</div>
+      <div class="s-title">מ-VS Code לאתר חי — 4 תחנות</div>
+      <div class="s-body">
+        <div class="flow">
+          <div class="flow-step"><i class="ti ti-code"></i><strong>בונים</strong><span class="en">VS Code</span><span>כותבות קוד (עם Claude)</span></div>
+          <div class="flow-arrow"><i class="ti ti-chevron-left"></i></div>
+          <div class="flow-step"><i class="ti ti-git-commit"></i><strong>שומרים</strong><span class="en">Git · commit</span><span>נקודת שמירה עם תיאור</span></div>
+          <div class="flow-arrow"><i class="ti ti-chevron-left"></i></div>
+          <div class="flow-step"><i class="ti ti-brand-github"></i><strong>מעלים</strong><span class="en">GitHub · push</span><span>הקוד עובר לענן</span></div>
+          <div class="flow-arrow"><i class="ti ti-chevron-left"></i></div>
+          <div class="flow-step"><i class="ti ti-brand-vercel"></i><strong>מפרסמים</strong><span class="en">Vercel · deploy</span><span>האתר באוויר 🎉</span></div>
+        </div>
+        <div class="note em"><i class="ti ti-info-circle"></i><span>נעבור על כל תחנה בנפרד. כל שלב בנוי על הקודם — בדיוק כמו במדריך ההתקנה.</span></div>
+      </div>
+    </section>
+
+    <!-- 4 · RECAP -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-concept">תזכורת</span></div>
+      <div class="s-title">רגע — מי כל אחד מהשלושה?</div>
+      <div class="s-body">
+        <div class="cols" style="grid-template-columns:repeat(3,1fr)">
+          <div class="card"><h4><i class="ti ti-git-branch"></i>Git</h4><p>מערכת השמירה וההיסטוריה, רצה <strong>על המחשב</strong> שלך.</p></div>
+          <div class="card"><h4><i class="ti ti-brand-github"></i>GitHub</h4><p>ה<strong>ענן</strong> לאחסון הקוד, גיבוי ושיתוף.</p></div>
+          <div class="card em"><h4><i class="ti ti-brand-vercel"></i>Vercel</h4><p>הופך את הקוד ל<strong>אתר חי</strong> בכתובת אינטרנט.</p></div>
+        </div>
+        <div class="note good"><i class="ti ti-circle-check"></i><span>כל הכלים האלה כבר מותקנים ומחוברים אצלך — ממדריך ההתקנה (מצגת 1).</span></div>
+      </div>
+    </section>
+
+    <!-- 5 · STEP 1: commit (ways) -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-step">1</span>Git · שמירה</div>
+      <div class="s-title">שומרים את העבודה — Commit</div>
+      <div class="s-sub">"Commit" = נקודת שמירה עם תיאור קצר. עושים את זה לפני שמעלים. שלוש דרכים:</div>
+      <div class="s-body">
+        <div class="roles">
+          <div class="role"><i class="ti ti-git-commit"></i><strong>בתוך VS Code</strong><span>פאנל Source Control — ויזואלי, מומלץ למתחילות</span></div>
+          <div class="role"><i class="ti ti-terminal-2"></i><strong>בטרמינל</strong><span>שתי פקודות קצרות (למטה)</span></div>
+          <div class="role"><i class="ti ti-robot"></i><strong>עם Claude Code</strong><span>פשוט מבקשות ממנו לשמור</span></div>
+        </div>
+        <div class="codeblock">git add .
+git commit -m "your message here"</div>
+      </div>
+    </section>
+
+    <!-- 6 · STEP 1: source control steps -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-step">1</span>Git · בתוך VS Code</div>
+      <div class="s-title">לעשות Commit בלחיצות — Source Control</div>
+      <div class="s-body">
+        <ol class="sl">
+          <li>לוחצים על אייקון ה-<strong>Source Control</strong> בסרגל הצד (או <strong>Ctrl+Shift+G</strong>).</li>
+          <li>מעל הקבצים ששונו לוחצים <strong>+</strong> כדי לכלול אותם בשמירה (Stage).</li>
+          <li>כותבים <strong>הודעה קצרה</strong> שמתארת מה שינית — למשל "הוספתי דף צור קשר".</li>
+          <li>לוחצים על כפתור <strong>Commit</strong> (✓).</li>
+        </ol>
+        <div class="note info"><i class="ti ti-writing"></i><span>ההודעה עוזרת לך (ול-Claude) להבין בעתיד מה היה בכל שמירה. כדאי לכתוב משהו ברור.</span></div>
+      </div>
+    </section>
+
+    <!-- 7 · STEP 2: publish to github -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-step">2</span>GitHub · העלאה ראשונה</div>
+      <div class="s-title">מעלים את הפרויקט לענן</div>
+      <div class="s-sub">בפעם הראשונה הכפתור נקרא "Publish to GitHub".</div>
+      <div class="s-body">
+        <ol class="sl">
+          <li>בפאנל Source Control יופיע כפתור <strong>Publish Branch / Publish to GitHub</strong>.</li>
+          <li>אם זו הפעם הראשונה — VS Code יבקש <strong>להתחבר ל-GitHub</strong> (Sign in). מאשרים.</li>
+          <li>בוחרים שם לריפו, ו-<strong>Private</strong> (פרטי) או <strong>Public</strong> (ציבורי).</li>
+          <li>VS Code יוצר את המאגר ב-GitHub ומעלה אליו את כל הקוד.</li>
+        </ol>
+        <div class="note good"><i class="ti ti-lock"></i><span><strong>Private</strong> = רק את רואה את הקוד · <strong>Public</strong> = כולם. תמיד אפשר לשנות בהמשך בהגדרות הריפו.</span></div>
+      </div>
+    </section>
+
+    <!-- 8 · STEP 2: push cycle -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-step">2</span>GitHub · השינויים הבאים</div>
+      <div class="s-title">כל שינוי הבא: Commit ואז Push</div>
+      <div class="s-sub">אחרי ההעלאה הראשונה, מעדכנים את הענן עם push.</div>
+      <div class="s-body">
+        <div class="flow">
+          <div class="flow-step"><i class="ti ti-edit"></i><strong>עורכים</strong><span>משנים משהו בקוד</span></div>
+          <div class="flow-arrow"><i class="ti ti-chevron-left"></i></div>
+          <div class="flow-step"><i class="ti ti-git-commit"></i><strong>Commit</strong><span>שומרים נקודת ציון</span></div>
+          <div class="flow-arrow"><i class="ti ti-chevron-left"></i></div>
+          <div class="flow-step"><i class="ti ti-arrows-up-down"></i><strong>Push</strong><span>מעלים ל-GitHub</span></div>
+        </div>
+        <div class="note info"><i class="ti ti-refresh"></i><span>ב-VS Code זה כפתור <strong>"Sync Changes"</strong> (חצים ↑↓) בפאנל Source Control — הוא דוחף את ה-commits לענן.</span></div>
+      </div>
+    </section>
+
+    <!-- 9 · STEP 3: vercel login -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-step">3</span>Vercel · התחברות</div>
+      <div class="s-title">מתחברים ל-Vercel דרך GitHub</div>
+      <div class="s-body">
+        <ol class="sl">
+          <li>נכנסים לאתר:</li>
+        </ol>
+        <div class="codeblock">vercel.com</div>
+        <ol class="sl" start="2">
+          <li>לוחצים <strong>Sign Up</strong> ובוחרים <strong>Continue with GitHub</strong>.</li>
+          <li>מאשרים ל-Vercel גישה לחשבון ה-GitHub שלך.</li>
+        </ol>
+        <div class="note em"><i class="ti ti-plug-connected"></i><span>כך Vercel "רואה" את הריפו שהעלית — ויכול למשוך ממנו את הקוד כדי לפרסם אותו.</span></div>
+      </div>
+    </section>
+
+    <!-- 10 · STEP 3: import + deploy -->
+    <section class="slide">
+      <div class="s-eyebrow"><span class="badge-step">3</span>Vercel · פרסום</div>
+      <div class="s-title">מייבאים את הפרויקט — ומפרסמים</div>
+      <div class="s-body">
+        <ol class="sl">
+          <li>לוחצים <strong>Add New ← Project</strong>, ובוחרים <strong>Import</strong> ליד הריפו שלך.</li>
+          <li>Vercel <strong>מזהה אוטומטית</strong> את סוג הפרויקט (אין מה להגדיר ברוב המקרים).</li>
+          <li>לוחצים <strong>Deploy</strong> ומחכים כמה שניות.</li>
+          <li>מקבלים כתובת חיה: <strong>שם-הפרויקט.vercel.app</strong> 🎉</li>
+        </ol>
+        <div class="note good"><i class="ti ti-confetti"></i><span>זהו — האתר <strong>באוויר</strong>! אפשר לשלוח את הקישור לכל אחד, מכל מכשיר.</span></div>
+      </div>
+    </section>
+
+    <!-- 11 · CONTINUOUS DEPLOYMENT -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-refresh-dot"></i>הקסם</div>
+      <div class="s-title">מעכשיו — הכל מתעדכן לבד</div>
+      <div class="s-sub">פרסום מתמשך (Continuous Deployment): מחברים פעם אחת, נהנים לתמיד.</div>
+      <div class="s-body">
+        <div class="flow">
+          <div class="flow-step"><i class="ti ti-edit"></i><strong>עורכים</strong><span>ב-VS Code</span></div>
+          <div class="flow-arrow"><i class="ti ti-chevron-left"></i></div>
+          <div class="flow-step"><i class="ti ti-git-commit"></i><strong>Commit + Push</strong><span>ל-GitHub</span></div>
+          <div class="flow-arrow"><i class="ti ti-chevron-left"></i></div>
+          <div class="flow-step"><i class="ti ti-brand-vercel"></i><strong>Vercel מפרסם</strong><span>אוטומטית, לבד</span></div>
+        </div>
+        <div class="note em"><i class="ti ti-bolt"></i><span>כל <strong>push</strong> עתידי ל-GitHub מתעדכן באתר תוך שניות — בלי להעלות ידנית שוב אף פעם.</span></div>
+      </div>
+    </section>
+
+    <!-- 12 · CLAUDE EASY WAY -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-robot"></i>הדרך הקלה</div>
+      <div class="s-title">או פשוט — לבקש מ-Claude Code</div>
+      <div class="s-sub">לא בטוחות בפקודות? תנו ל-AI לעשות, ולהדריך אתכן תוך כדי.</div>
+      <div class="s-body">
+        <div class="prompt"><i class="ti ti-message-chatbot"></i><span><b>"</b>תעשי commit עם הודעה מתאימה ותדחפי ל-GitHub<b>"</b></span></div>
+        <div class="prompt"><i class="ti ti-message-chatbot"></i><span><b>"</b>תסבירי לי צעד-צעד איך לחבר את הפרויקט ל-Vercel<b>"</b></span></div>
+        <div class="prompt"><i class="ti ti-message-chatbot"></i><span><b>"</b>תבדקי שהכל עלה ל-GitHub כמו שצריך<b>"</b></span></div>
+        <div class="note info"><i class="ti ti-school"></i><span>Claude Code יכול להריץ את git בשבילכן — אבל כדאי גם <strong>להבין</strong> את התהליך (השקפים הקודמים), כדי לדעת מה קורה.</span></div>
+      </div>
+    </section>
+
+    <!-- 13 · SUMMARY -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-checklist"></i>סיכום</div>
+      <div class="s-title">השרשרת המלאה — במבט אחד</div>
+      <div class="s-body">
+        <div class="sum-grid">
+          <div class="sum-row"><div class="sum-ic"><i class="ti ti-git-commit"></i></div><div class="sum-b"><strong>1 · Git — Commit</strong><span>שומרים נקודת ציון עם תיאור (פאנל Source Control / git commit)</span></div></div>
+          <div class="sum-row"><div class="sum-ic"><i class="ti ti-brand-github"></i></div><div class="sum-b"><strong>2 · GitHub — Publish / Push</strong><span>מעלים את הקוד לענן (Publish to GitHub, ואז Sync Changes)</span></div></div>
+          <div class="sum-row"><div class="sum-ic"><i class="ti ti-brand-vercel"></i></div><div class="sum-b"><strong>3 · Vercel — Deploy</strong><span>מייבאים את הריפו ומפרסמים → כתובת חיה .vercel.app</span></div></div>
+          <div class="sum-row"><div class="sum-ic"><i class="ti ti-refresh-dot"></i></div><div class="sum-b"><strong>מכאן — אוטומטי</strong><span>כל push עתידי מתפרסם לבד (Continuous Deployment)</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 · END -->
+    <section class="slide cover">
+      <div class="c-inner">
+        <div class="cover-badge"><i class="ti ti-world-check"></i>סיימנו את השרשרת</div>
+        <h1>מהמחשב שלך — לכל העולם 🌍</h1>
+        <p class="lead">Git שומר · GitHub מאחסן · Vercel מפרסם. עכשיו כל פרויקט שתבני יכול להיות באוויר בכמה לחיצות — ולהתעדכן לבד בכל שינוי.</p>
+        <div class="sig">
+          <div class="sig-av">יב</div>
+          <div class="sig-txt"><strong>יהודית ברדוגו</strong><span>מערכות מותאמות אישית · נבנות בדיוק · © 2026</span></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="hint">← → / רווח למעבר בין שקופיות · F להגדלה</div>
+<div class="nav">
+  <button id="prev" aria-label="הקודם"><i class="ti ti-chevron-right"></i></button>
+  <span class="count"><span id="cur">1</span> / <span id="total">14</span></span>
+  <button id="next" aria-label="הבא"><i class="ti ti-chevron-left"></i></button>
+</div>
+
+<script>
+const PRINT = new URLSearchParams(location.search).has('print');
+const slides = Array.from(document.querySelectorAll('.slide'));
+const deck = document.getElementById('deck');
+let idx = 0;
+if (PRINT) {
+  document.body.classList.add('print');
+} else {
+  document.getElementById('total').textContent = slides.length;
+  function show(n){ idx=Math.max(0,Math.min(slides.length-1,n)); slides.forEach((s,i)=>s.classList.toggle('active',i===idx)); document.getElementById('cur').textContent=idx+1; }
+  function next(){ show(idx+1); } function prev(){ show(idx-1); }
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowLeft'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); next(); }
+    else if(e.key==='ArrowRight'||e.key==='PageUp'){ e.preventDefault(); prev(); }
+    else if(e.key==='Home'){ show(0); } else if(e.key==='End'){ show(slides.length-1); }
+    else if(e.key==='f'||e.key==='F'){ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+  });
+  document.getElementById('next').addEventListener('click', next);
+  document.getElementById('prev').addEventListener('click', prev);
+  deck.addEventListener('click', e=>{ if(!e.target.closest('a')) next(); });
+  function fit(){ const pad=40; deck.style.transform='scale('+Math.min((innerWidth-pad)/1280,(innerHeight-pad)/720)+')'; }
+  addEventListener('resize', fit); fit(); show(0);
+}
+</script>
+</body>
+</html>
