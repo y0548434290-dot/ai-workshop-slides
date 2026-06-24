@@ -312,7 +312,51 @@ git commit -m "your message here"</div>
       </div>
     </section>
 
-    <!-- 13 · SUMMARY -->
+    <!-- 13 · NO-CODE intro -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-wand"></i>ובלי קוד?</div>
+      <div class="s-title">בנית ב-Base44 או Lovable? — אפילו יותר קל</div>
+      <div class="s-sub">בכלים האלה אין צורך בשרשרת Git → GitHub → Vercel — הם מארחים את האתר בעצמם.</div>
+      <div class="s-body">
+        <div class="cols">
+          <div class="card em"><h4><i class="ti ti-rocket"></i>Base44</h4><p>מתארח אוטומטית על תשתית Wix. אין שלב "deploy" — האתר חי מהרגע שיצרת אותו.</p></div>
+          <div class="card em"><h4><i class="ti ti-heart-code"></i>Lovable</h4><p>מתארח על Lovable Cloud. לוחצים כפתור <strong>Publish</strong> — והאתר באוויר.</p></div>
+        </div>
+        <div class="note em"><i class="ti ti-info-circle"></i><span>ההבדל מהשרשרת שלמדנו: כאן הפרסום <strong>מובנה</strong> — לחיצה אחת. רוצות דומיין משלכן ("לקשר לשרת")? גם זה כמה לחיצות — בשקפים הבאים.</span></div>
+      </div>
+    </section>
+
+    <!-- 14 · BASE44 publish -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-rocket"></i>Base44 · פרסום ודומיין</div>
+      <div class="s-title">Base44 — פרסום וקישור דומיין משלך</div>
+      <div class="s-body">
+        <p class="p">אין שלב פרסום נפרד — האפליקציה חיה מיד, בכתובת חינמית: <span class="hl">myapp.base44.app</span> (אפשר לשנות את השם בכל רגע).</p>
+        <ol class="sl">
+          <li>נכנסים להגדרות הפרויקט ← <strong>Domain</strong>.</li>
+          <li>שתי דרכים: <strong>לקנות דומיין דרך Base44</strong> (DNS+SSL אוטומטי, מתחבר תוך 5–30 דק') או <strong>לחבר דומיין קיים</strong>.</li>
+          <li>לדומיין קיים: מוסיפים רשומת <strong>CNAME</strong> אצל ספק הדומיין, עם הערך שמופיע בהגדרות הפרויקט.</li>
+        </ol>
+        <div class="note good"><i class="ti ti-lock-check"></i><span>ה-<strong>SSL</strong> (האייקון 🔒) מופק אוטומטית. שינויי DNS עשויים לקחת עד 72 שעות. דומיין מותאם זמין בתוכניות בתשלום.</span></div>
+      </div>
+    </section>
+
+    <!-- 15 · LOVABLE publish -->
+    <section class="slide">
+      <div class="s-eyebrow"><i class="ti ti-heart-code"></i>Lovable · פרסום ודומיין</div>
+      <div class="s-title">Lovable — פרסום וקישור דומיין משלך</div>
+      <div class="s-body">
+        <p class="p">לוחצים על כפתור <span class="hl">Publish</span> (פינה עליונה) ומקבלים כתובת חיה: <span class="hl">yourapp.lovable.app</span> — בכל תוכנית, כולל חינם, עם SSL ו-CDN מובנים.</p>
+        <ol class="sl">
+          <li>לדומיין משלכן: <strong>Project ← Settings ← Domains</strong> (דורש תוכנית בתשלום).</li>
+          <li>רושמים דומיין אצל ספק (Namecheap / GoDaddy).</li>
+          <li>מעתיקים את ערכי ה-<strong>DNS</strong> ש-Lovable נותן, ומדביקים אצל ספק הדומיין.</li>
+        </ol>
+        <div class="note info"><i class="ti ti-refresh"></i><span>לעדכון האתר אחרי שינויים: <strong>Publish ← Update</strong>. בונוס: אפשר גם לסנכרן ל-GitHub ולפרסם דרך <strong>Vercel/Netlify</strong> — בדיוק השרשרת שלמדנו.</span></div>
+      </div>
+    </section>
+
+    <!-- 16 · SUMMARY -->
     <section class="slide">
       <div class="s-eyebrow"><i class="ti ti-checklist"></i>סיכום</div>
       <div class="s-title">השרשרת המלאה — במבט אחד</div>
@@ -322,6 +366,7 @@ git commit -m "your message here"</div>
           <div class="sum-row"><div class="sum-ic"><i class="ti ti-brand-github"></i></div><div class="sum-b"><strong>2 · GitHub — Publish / Push</strong><span>מעלים את הקוד לענן (Publish to GitHub, ואז Sync Changes)</span></div></div>
           <div class="sum-row"><div class="sum-ic"><i class="ti ti-brand-vercel"></i></div><div class="sum-b"><strong>3 · Vercel — Deploy</strong><span>מייבאים את הריפו ומפרסמים → כתובת חיה .vercel.app</span></div></div>
           <div class="sum-row"><div class="sum-ic"><i class="ti ti-refresh-dot"></i></div><div class="sum-b"><strong>מכאן — אוטומטי</strong><span>כל push עתידי מתפרסם לבד (Continuous Deployment)</span></div></div>
+          <div class="sum-row"><div class="sum-ic"><i class="ti ti-wand"></i></div><div class="sum-b"><strong>בנית ב-Base44 / Lovable?</strong><span>פרסום מובנה בלחיצה אחת · דומיין משלך דרך הגדרות הפרויקט</span></div></div>
         </div>
       </div>
     </section>
@@ -345,7 +390,7 @@ git commit -m "your message here"</div>
 <div class="hint">← → / רווח למעבר בין שקופיות · F להגדלה</div>
 <div class="nav">
   <button id="prev" aria-label="הקודם"><i class="ti ti-chevron-right"></i></button>
-  <span class="count"><span id="cur">1</span> / <span id="total">14</span></span>
+  <span class="count"><span id="cur">1</span> / <span id="total">17</span></span>
   <button id="next" aria-label="הבא"><i class="ti ti-chevron-left"></i></button>
 </div>
 
